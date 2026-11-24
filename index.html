@@ -3,11 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-	<link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="BedaYa App">
     <title>BedaYa AcademY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -127,6 +122,20 @@
         html[data-theme="dark"] .shadow-xl { box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.8); }
         html[data-theme="dark"] .shadow-sm,
         html[data-theme="dark"] .shadow-md { box-shadow: none; }
+
+        /* ===== Suggestions dropdown + settings modal ===== */
+        .suggest-list { display: none; position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; z-index: 30; max-height: 11rem; overflow-y: auto; background: #fff; border: 1px solid rgba(180,151,90,.55); border-radius: 12px; box-shadow: 0 12px 26px -12px rgba(0,0,0,.4); }
+        .suggest-item { padding: 8px 12px; font-size: 13px; font-weight: 600; color: #6b4e1e; cursor: pointer; }
+        .suggest-item:hover, .suggest-item.active { background: #fbf3e1; }
+        html[data-theme="dark"] .suggest-list { background: #171c28; border-color: #2f3750; }
+        html[data-theme="dark"] .suggest-item { color: #ecd08a; }
+        html[data-theme="dark"] .suggest-item:hover, html[data-theme="dark"] .suggest-item.active { background: #263048; }
+        #settings-modal { display: none; position: fixed; inset: 0; z-index: 60; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.45); }
+        .st-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: 10px; border: 1px solid rgba(180,151,90,.3); font-size: 13px; font-weight: 600; }
+        html[data-theme="dark"] .st-row { border-color: #2f3750; }
+        .st-del { flex: none; width: 24px; height: 24px; border-radius: 999px; border: 1px solid #d9a3a3; color: #b43c3c; font-size: 13px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+        .st-del:hover { background: #fdecec; }
+        html[data-theme="dark"] .st-del:hover { background: #3a2226; }
     </style>
 </head>
 <body class="px-3 py-3 flex items-center justify-center">
@@ -135,6 +144,9 @@
     <div id="home-view" class="view active app-shell bg-white rounded-3xl shadow-xl border border-amber-100 relative">
         <div class="flex-none flex justify-end items-center px-4 pt-3 pb-1.5">
             <div class="flex items-center gap-2">
+                <button type="button" onclick="openSettings()" class="settings-btn w-7 h-7 flex-none rounded-full border border-amber-400 text-amber-900 bg-white hover:bg-amber-50 transition-colors shadow-sm flex items-center justify-center" aria-label="Settings" title="Settings">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
                 <button type="button" onclick="toggleTheme()" class="theme-btn w-7 h-7 flex-none rounded-full border border-amber-400 text-amber-900 bg-white hover:bg-amber-50 transition-colors shadow-sm flex items-center justify-center" aria-label="Dark / Light mode" title="Dark / Light mode">
                     <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
                     <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2 12h2.2M19.8 12H22M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
@@ -195,6 +207,9 @@
                 <button onclick="showView('home')" id="report-home-btn" class="px-2.5 py-1 rounded-full border border-amber-400 text-amber-900 text-[11px] font-bold hover:bg-amber-50 transition-colors shadow-sm bg-white">🏠</button>
             </div>
             <div class="flex items-center gap-2">
+                <button type="button" onclick="openSettings()" class="settings-btn w-7 h-7 flex-none rounded-full border border-amber-400 text-amber-900 bg-white hover:bg-amber-50 transition-colors shadow-sm flex items-center justify-center" aria-label="Settings" title="Settings">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
                 <button type="button" onclick="toggleTheme()" class="theme-btn w-7 h-7 flex-none rounded-full border border-amber-400 text-amber-900 bg-white hover:bg-amber-50 transition-colors shadow-sm flex items-center justify-center" aria-label="Dark / Light mode" title="Dark / Light mode">
                     <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
                     <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2 12h2.2M19.8 12H22M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
@@ -229,15 +244,15 @@
                 <div class="space-y-2">
                     <div>
                         <label id="lbl-teacher" class="block text-xs font-bold text-amber-900 mb-1">👨‍🏫 Teacher's Name:</label>
-                        <input type="text" id="teacher-name" class="w-full p-2 rounded-xl input-box text-sm font-medium" placeholder="Enter teacher's name">
+<div class="relative"><input type="text" id="teacher-name" autocomplete="off" class="w-full p-2 rounded-xl input-box text-sm font-medium" placeholder="Enter teacher's name"><div id="teacher-suggest" class="suggest-list"></div></div>
                     </div>
                     <div>
                         <label id="lbl-student" class="block text-xs font-bold text-amber-900 mb-1">👦 Student's Name:</label>
-                        <input type="text" id="student-name" class="w-full p-2 rounded-xl input-box text-sm font-medium" placeholder="Enter student's name">
+<div class="relative"><input type="text" id="student-name" autocomplete="off" class="w-full p-2 rounded-xl input-box text-sm font-medium" placeholder="Enter student's name"><div id="student-suggest" class="suggest-list"></div></div>
                     </div>
                     <div>
                         <label id="lbl-month" class="block text-xs font-bold text-amber-900 mb-1">📅 Month:</label>
-                        <input type="text" id="report-month" class="w-full p-2 rounded-xl input-box text-sm font-medium" placeholder="e.g. October 2026">
+<select id="report-month" class="w-full p-2 rounded-xl input-box text-sm font-medium"></select>
                     </div>
                 </div>
 
@@ -391,6 +406,17 @@
     <!-- Hidden template used only for PDF rendering -->
     <div id="pdf-template" style="position:absolute; left:-9999px; top:0;"></div>
 
+    <!-- ================= SETTINGS (admin: teachers / students lists) ================= -->
+    <div id="settings-modal" onclick="if(event.target===this)closeSettings()">
+        <div class="bg-white rounded-3xl shadow-xl border border-amber-100 w-full max-w-sm flex flex-col overflow-hidden" style="max-height:85vh;">
+            <div class="flex-none flex items-center justify-between px-4 pt-3 pb-2">
+                <h2 id="st-title" class="text-sm font-extrabold text-amber-900">Settings</h2>
+                <button type="button" onclick="closeSettings()" class="w-7 h-7 rounded-full border border-amber-400 text-amber-900 text-sm font-bold flex items-center justify-center hover:bg-amber-50" aria-label="Close">✕</button>
+            </div>
+            <div id="st-body" class="px-4 pb-4 overflow-y-auto"></div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 right-5 left-5 sm:left-auto bg-gray-900 text-white px-5 py-3 rounded-xl shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none text-xs font-bold z-50 text-center">
         Report copied successfully! ✅
@@ -469,7 +495,19 @@
                 pdfError: "Something went wrong while creating the PDF. Please try again.",
                 phTeacher: "Enter teacher's name",
                 phStudent: "Enter student's name",
-                phMonth: "e.g. October 2026",
+                phMonth: "Select month",
+                stTitle: "Settings",
+                stTeachers: "👨‍🏫 Teachers",
+                stStudents: "👦 Students",
+                stBack: "⬅️ Back",
+                stAdd: "Add",
+                stAddPhT: "Type a teacher's name (or several, one per line)",
+                stAddPhS: "Type a student's name (or several, one per line)",
+                stSearch: "Search...",
+                stEmpty: "No names yet.",
+                stNoMatch: "No matching names.",
+                stDelete: "Delete",
+                stHint: "Manage the names that appear in the report suggestions.",
                 phTarget: "Write next month's targets...",
                 phPlan: "Write next month's action plan...",
                 phNote: "Encouraging notes or remarks for the student/parent...",
@@ -542,7 +580,19 @@
                 pdfError: "حدث خطأ أثناء إنشاء الملف. حاول مرة أخرى.",
                 phTeacher: "اكتب اسم المعلم...",
                 phStudent: "اكتب اسم الطالب...",
-                phMonth: "مثال: أكتوبر 2026",
+                phMonth: "اختر الشهر",
+                stTitle: "الإعدادات",
+                stTeachers: "👨‍🏫 معلمين",
+                stStudents: "👦 طلاب",
+                stBack: "⬅️ رجوع",
+                stAdd: "إضافة",
+                stAddPhT: "اكتب اسم معلم (أو عدة أسماء، كل اسم في سطر)",
+                stAddPhS: "اكتب اسم طالب (أو عدة أسماء، كل اسم في سطر)",
+                stSearch: "بحث...",
+                stEmpty: "لا توجد أسماء بعد.",
+                stNoMatch: "لا توجد أسماء مطابقة.",
+                stDelete: "حذف",
+                stHint: "أدِر الأسماء التي تظهر كاقتراحات في التقارير.",
                 phTarget: "اكتب أهداف الشهر القادم...",
                 phPlan: "اكتب خطة العمل للشهر القادم...",
                 phNote: "ملاحظات تشجيعية للطالب أو ولي الأمر...",
@@ -652,7 +702,7 @@
             document.getElementById('lbl-student').innerText = t.lblStudent;
             document.getElementById('student-name').placeholder = t.phStudent;
             document.getElementById('lbl-month').innerText = t.lblMonth;
-            document.getElementById('report-month').placeholder = t.phMonth;
+            renderMonthSelect();
             document.getElementById('lbl-subjects').innerText = t.lblSubjects;
             document.getElementById('btn-next-1').innerText = t.btnNext1;
 
@@ -682,6 +732,8 @@
             document.getElementById('lbl-attendance').innerText = t.lblAttendance;
             document.getElementById('lbl-performance').innerText = t.lblPerformance;
             document.getElementById('lbl-photo').innerText = t.lblPhoto;
+            document.querySelectorAll('.settings-btn').forEach(b => { b.title = t.stTitle; b.setAttribute('aria-label', t.stTitle); });
+            if (settingsOpen) renderSettings();
         }
 
         function initApp() {
@@ -724,6 +776,8 @@
             const t = translations[currentLang];
             const prev = document.getElementById('photo-preview');
             document.getElementById('lbl-photo').innerText = t.lblPhoto;
+            document.querySelectorAll('.settings-btn').forEach(b => { b.title = t.stTitle; b.setAttribute('aria-label', t.stTitle); });
+            if (settingsOpen) renderSettings();
             document.getElementById('btn-photo-pick').innerText = studentPhoto ? t.btnPhotoChange : t.btnPhoto;
             document.getElementById('btn-photo-camera').innerText = t.btnCamera;
             if (!studentPhoto) { prev.innerHTML = ''; return; }
@@ -1155,6 +1209,275 @@
                 toast.style.opacity = '0';
             }, 3000);
         }
+
+
+        // ================= Months (dropdown) =================
+        const MONTHS = {
+            en: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+            ar: ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"]
+        };
+        function renderMonthSelect() {
+            const sel = document.getElementById('report-month');
+            const idx = sel.selectedIndex > 0 ? sel.selectedIndex : 0;
+            const t = translations[currentLang];
+            sel.innerHTML = '<option value="">' + t.phMonth + '</option>' +
+                MONTHS[currentLang].map(n => '<option value="' + n + '">' + n + '</option>').join('');
+            sel.selectedIndex = idx;
+        }
+
+        // ================= Teachers / Students lists =================
+        // To ship names to every device, put them here, e.g. const DEFAULT_TEACHERS = ["Ms. Hala", "أ. هالة"];
+        const DEFAULT_TEACHERS = ["AbdulWahed Yaya", "AbdulRahman Muhammad", "Islam Maged", "AbdulRahman Atwa"];
+        const DEFAULT_STUDENTS = [];
+        const STORE_KEYS = { teachers: 'bedaya_teachers', students: 'bedaya_students' };
+        const memoryStore = {};
+        const people = { teachers: [], students: [] };
+
+        // ---- Google Sheets link: when set, teachers/students lists are shared through the sheet ----
+        const SHEET_API_URL = "https://script.google.com/macros/s/AKfycby4wngwJDOrO1nK7MJCnY4FtiH36ksgPs41P21frK3i4QcxvatKhZRxsGChoYn3aIsJmw/exec";
+        const CACHE_KEYS = { teachers: 'bedaya_cache_teachers', students: 'bedaya_cache_students' };
+        function sheetOn() { return !!SHEET_API_URL; }
+        function cacheLists() {
+            Object.keys(CACHE_KEYS).forEach(k => { try { localStorage.setItem(CACHE_KEYS[k], JSON.stringify(people[k])); } catch (e) {} });
+        }
+        function applySheetData(d) {
+            if (!d) return;
+            ['teachers', 'students'].forEach(k => { if (Array.isArray(d[k])) people[k] = d[k].map(x => String(x).trim()).filter(Boolean); });
+            cacheLists();
+            if (settingsOpen) renderSettings();
+        }
+        function syncFromSheet() {
+            if (!sheetOn()) return;
+            fetch(SHEET_API_URL + '?t=' + Date.now()).then(r => r.json()).then(applySheetData).catch(() => {});
+        }
+        function sheetPost(body) {
+            fetch(SHEET_API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+                .then(r => r.json()).then(applySheetData)
+                .catch(() => showToast(currentLang === 'ar' ? 'تعذر الاتصال بالشيت، حاول مرة أخرى.' : 'Could not reach the sheet. Please try again.'));
+        }
+        const customState = { teachers: { added: [], removed: [] }, students: { added: [], removed: [] } };
+        function getDefaults(kind) { return kind === 'teachers' ? DEFAULT_TEACHERS : DEFAULT_STUDENTS; }
+        function rebuildPeople(kind) {
+            const removed = customState[kind].removed.map(normName);
+            const out = [];
+            getDefaults(kind).concat(customState[kind].added).forEach(n => {
+                if (removed.includes(normName(n))) return;
+                if (!out.some(x => normName(x) === normName(n))) out.push(n);
+            });
+            people[kind] = out;
+        }
+        function loadPeople() {
+            const isStr = x => typeof x === 'string';
+            Object.keys(STORE_KEYS).forEach(kind => {
+                let st = null;
+                try {
+                    const raw = localStorage.getItem(STORE_KEYS[kind]);
+                    if (raw) st = JSON.parse(raw);
+                } catch (e) { st = memoryStore[kind] || null; }
+                let added = [], removed = [];
+                if (Array.isArray(st)) added = st;                       // old format: plain list of added names
+                else if (st && typeof st === 'object') {
+                    added = Array.isArray(st.added) ? st.added : [];
+                    removed = Array.isArray(st.removed) ? st.removed : [];
+                }
+                customState[kind] = { added: added.filter(isStr), removed: removed.filter(isStr) };
+                rebuildPeople(kind);
+            });
+        }
+        function savePeople(kind) {
+            memoryStore[kind] = JSON.parse(JSON.stringify(customState[kind]));
+            try { localStorage.setItem(STORE_KEYS[kind], JSON.stringify(customState[kind])); } catch (e) {}
+        }
+        function normName(s) {
+            return (s || '').toString().toLowerCase()
+                .replace(/[ً-ٰٟـ]/g, '')
+                .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+                .replace(/\s+/g, ' ').trim();
+        }
+        function sortedNames(kind) {
+            return people[kind].slice().sort((a, b) => a.localeCompare(b, 'ar'));
+        }
+        function addNames(kind, text) {
+            if (sheetOn()) {
+                const fresh = [];
+                (text || '').split(/[\n,،;؛]+/).map(x => x.replace(/\s+/g, ' ').trim()).filter(Boolean).forEach(n => {
+                    if (!people[kind].some(x => normName(x) === normName(n)) && !fresh.some(x => normName(x) === normName(n))) fresh.push(n);
+                });
+                if (fresh.length) { people[kind] = people[kind].concat(fresh); cacheLists(); sheetPost({ action: 'add', kind: kind, names: fresh }); }
+                return fresh.length;
+            }
+            let added = 0;
+            const st = customState[kind];
+            (text || '').split(/[\n,،;؛]+/).map(x => x.replace(/\s+/g, ' ').trim()).filter(Boolean).forEach(n => {
+                if (people[kind].some(x => normName(x) === normName(n))) return;
+                st.removed = st.removed.filter(x => normName(x) !== normName(n));   // re-adding a deleted default
+                if (!getDefaults(kind).some(x => normName(x) === normName(n))) st.added.push(n);
+                people[kind].push(n); added++;
+            });
+            if (added) { savePeople(kind); rebuildPeople(kind); }
+            return added;
+        }
+        function removeName(kind, name) {
+            if (sheetOn()) {
+                people[kind] = people[kind].filter(x => x !== name); cacheLists();
+                sheetPost({ action: 'remove', kind: kind, name: name });
+                return;
+            }
+            const st = customState[kind];
+            st.added = st.added.filter(x => normName(x) !== normName(name));
+            if (getDefaults(kind).some(x => normName(x) === normName(name))) st.removed.push(name);
+            savePeople(kind); rebuildPeople(kind);
+        }
+
+        // Suggestions: showAll = true -> full list on focus (teachers); false -> only while typing (students)
+        function attachSuggest(inputId, listId, kind, showAll) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+            let items = [], active = -1, hideTimer = null;
+            function hide() { list.style.display = 'none'; list.innerHTML = ''; items = []; active = -1; }
+            function pick(n) { input.value = n; hide(); }
+            function show(arr) {
+                items = arr; active = -1; list.innerHTML = '';
+                if (!arr.length) { hide(); return; }
+                arr.forEach(n => {
+                    const d = document.createElement('div');
+                    d.className = 'suggest-item';
+                    d.textContent = n;
+                    d.addEventListener('click', () => pick(n));
+                    list.appendChild(d);
+                });
+                list.style.display = 'block';
+            }
+            function highlight() {
+                Array.from(list.children).forEach((c, i) => c.classList.toggle('active', i === active));
+                if (active >= 0 && list.children[active]) list.children[active].scrollIntoView({ block: 'nearest' });
+            }
+            input.addEventListener('focus', () => { clearTimeout(hideTimer); if (showAll) show(sortedNames(kind)); });
+            input.addEventListener('input', () => {
+                clearTimeout(hideTimer);
+                const q = normName(input.value);
+                if (!q) { if (showAll) show(sortedNames(kind)); else hide(); return; }
+                show(sortedNames(kind).filter(n => normName(n).startsWith(q)));
+            });
+            input.addEventListener('blur', () => { hideTimer = setTimeout(hide, 200); });
+            input.addEventListener('keydown', e => {
+                if (!items.length) return;
+                if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); highlight(); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); highlight(); }
+                else if (e.key === 'Enter' && active >= 0) { e.preventDefault(); pick(items[active]); }
+                else if (e.key === 'Escape') { hide(); }
+            });
+            list.addEventListener('mousedown', e => e.preventDefault());
+            hide();
+        }
+
+        // ================= Settings modal =================
+        let settingsOpen = false, settingsView = 'menu', settingsFilter = '';
+        function openSettings() {
+            settingsOpen = true; settingsView = 'menu'; settingsFilter = '';
+            document.getElementById('settings-modal').style.display = 'flex';
+            renderSettings();
+        }
+        function closeSettings() {
+            settingsOpen = false;
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+        function renderSettings() {
+            const t = translations[currentLang];
+            const body = document.getElementById('st-body');
+            const title = document.getElementById('st-title');
+            body.innerHTML = '';
+            title.textContent = settingsView === 'menu' ? t.stTitle : (settingsView === 'teachers' ? t.stTeachers : t.stStudents);
+
+            if (settingsView === 'menu') {
+                const hint = document.createElement('p');
+                hint.className = 'text-[11px] text-amber-800/70 font-medium mb-3';
+                hint.textContent = t.stHint;
+                body.appendChild(hint);
+                [['teachers', t.stTeachers], ['students', t.stStudents]].forEach(([k, label]) => {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'w-full btn-gold py-3 rounded-2xl font-bold text-sm shadow-md mb-2.5';
+                    b.textContent = label + ' (' + people[k].length + ')';
+                    b.addEventListener('click', () => { settingsView = k; settingsFilter = ''; renderSettings(); });
+                    body.appendChild(b);
+                });
+                return;
+            }
+
+            const kind = settingsView;
+            const back = document.createElement('button');
+            back.type = 'button';
+            back.className = 'mb-2.5 px-3 py-1 rounded-full border border-amber-400 text-amber-900 text-[11px] font-bold hover:bg-amber-50';
+            back.textContent = t.stBack;
+            back.addEventListener('click', () => { settingsView = 'menu'; renderSettings(); });
+            body.appendChild(back);
+
+            const ta = document.createElement('textarea');
+            ta.rows = 2;
+            ta.className = 'w-full p-2 rounded-xl input-box text-sm';
+            ta.placeholder = kind === 'teachers' ? t.stAddPhT : t.stAddPhS;
+            body.appendChild(ta);
+            const add = document.createElement('button');
+            add.type = 'button';
+            add.className = 'w-full btn-gold py-2 rounded-xl font-bold text-sm mt-1.5 mb-3';
+            add.textContent = t.stAdd;
+            add.addEventListener('click', () => { if (addNames(kind, ta.value)) { ta.value = ''; } fillList(); });
+            body.appendChild(add);
+
+            const search = document.createElement('input');
+            search.type = 'text';
+            search.autocomplete = 'off';
+            search.className = 'w-full p-2 rounded-xl input-box text-sm mb-2';
+            search.placeholder = t.stSearch;
+            search.value = settingsFilter;
+            search.addEventListener('input', () => { settingsFilter = search.value; fillList(); });
+            body.appendChild(search);
+
+            const listBox = document.createElement('div');
+            listBox.className = 'space-y-1.5';
+            body.appendChild(listBox);
+
+            function fillList() {
+                listBox.innerHTML = '';
+                const all = sortedNames(kind);
+                const q = normName(settingsFilter);
+                const shown = q ? all.filter(n => normName(n).includes(q)) : all;
+                if (!shown.length) {
+                    const e = document.createElement('p');
+                    e.className = 'text-xs text-gray-400 text-center py-3';
+                    e.textContent = all.length ? t.stNoMatch : t.stEmpty;
+                    listBox.appendChild(e);
+                    return;
+                }
+                shown.forEach(n => {
+                    const row = document.createElement('div');
+                    row.className = 'st-row text-amber-900';
+                    const s = document.createElement('span');
+                    s.textContent = n;
+                    const d = document.createElement('button');
+                    d.type = 'button';
+                    d.className = 'st-del';
+                    d.title = t.stDelete;
+                    d.setAttribute('aria-label', t.stDelete);
+                    d.textContent = '✕';
+                    d.addEventListener('click', () => { removeName(kind, n); fillList(); });
+                    row.appendChild(s); row.appendChild(d);
+                    listBox.appendChild(row);
+                });
+            }
+            fillList();
+        }
+
+        loadPeople();
+        if (sheetOn()) {
+            Object.keys(CACHE_KEYS).forEach(k => {
+                try { const c = JSON.parse(localStorage.getItem(CACHE_KEYS[k])); if (Array.isArray(c)) people[k] = c; } catch (e) {}
+            });
+            syncFromSheet();
+        }
+        attachSuggest('teacher-name', 'teacher-suggest', 'teachers', true);
+        attachSuggest('student-name', 'student-suggest', 'students', false);
 
         window.onload = initApp;
     </script>
